@@ -44,17 +44,14 @@ COPR_COMMAND="${COPR_COMMAND:-copr --config ${COPR_CONFIG}}"
 # Max waiting time for the build to complete, in seconds
 TIME_WAIT=${TIME_WAIT:-1200}
 
-# If set will enable the dev mode, which does things like using the git SHA in the version field
-DEV_MODE=${DEV_MODE:-}
+# If set, it will override the version field of the RPM
+DEV_VERSION=${DEV_VERSION:-}
 
 function patch_spec() {
-  [ -z "${DEV_MODE}" ] && return
+  [ -z "${DEV_VERSION}" ] && return
 
-  local release
-  release="%{git_shortcommit}%{?dist}"
-
-  echo "DEV_MODE set, patching the .spec Release field to: ${release}"
-  sed -i "s/^Release:.*/Release: ${release}/" "${REPO}.spec"
+  echo "DEV_VERSION set, patching the .spec Version field to: ${DEV_VERSION}"
+  sed -i "s/^Version:.*/Version: ${DEV_VERSION}/" "${REPO}.spec"
 }
 
 function generate_srpm() {
